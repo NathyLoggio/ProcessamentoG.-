@@ -28,6 +28,7 @@ using namespace std;
 using namespace glm;
 
 #include <cmath>
+vector<vec2> vertices;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -65,11 +66,11 @@ void main()
 }
 )";
 
-struct Triangle 
+struct Triangle
 {
-	vec3 position;
-	vec3 dimensions;
-	vec3 color;
+    vec3 position;
+    vec3 dimensions;
+    vec3 color;
 };
 
 vector<Triangle> triangles;
@@ -383,16 +384,24 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
-		cout << xpos << "  " << ypos << endl;
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        vertices.push_back(vec2(xpos, ypos));
 
-		Triangle tri;
-		tri.position = vec3(xpos,ypos,0.0);
-		tri.dimensions = vec3(100.0,100.0,1.0);
-		tri.color = vec3(colors[iColor].r, colors[iColor].g, colors[iColor].b);
-		iColor = (iColor + 1) % colors.size();
-		triangles.push_back(tri);
-		
-	}
+        if (vertices.size() == 3)
+        {
+            float cx = (vertices[0].x + vertices[1].x + vertices[2].x) / 3.00;
+            float cy = (vertices[0].y + vertices[1].y + vertices[2].y) / 3.00;
+
+            Triangle tri;
+            tri.position = vec3(cx, cy, 0.0);
+            tri.dimensions = vec3(100.0,100.0,1.0); 
+
+            tri.color = vec3(colors[iColor].r, colors[iColor].g, colors[iColor].b);
+            iColor = (iColor + 1) % colors.size();
+            triangles.push_back(tri);
+            vertices.clear();
+        }
+    }
 }
+  
